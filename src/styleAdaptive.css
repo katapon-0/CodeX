@@ -1,0 +1,259 @@
+@media (max-width: 768px) {
+
+  /* ================= GLOBAL LAYOUT ================= */
+
+  .home-layout,
+  .goods-layout {
+    flex-direction: column;
+    padding: 10px;
+    gap: 16px;
+  }
+
+  .main-content {
+    gap: 20px;
+  }
+
+  /* ================= BANNER ================= */
+
+  .bannerr {
+    max-height: 160px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .bannerr img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ================= GRID ================= */
+
+  .grid,
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  /* ================= PRODUCT CARD ================= */
+
+  .product-card-title {
+    font-size: 14px;
+  }
+
+  .product-card-price {
+    font-size: 16px;
+  }
+
+  .add-to-cart-btn {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  .fav-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .fav-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ================= GOODS PAGE ================= */
+
+  .goods-layout .product-card {
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  .product-image img {
+    width: 100%;
+  }
+
+  .product-title {
+    font-size: 24px;
+  }
+
+  /* ================= FOOTER ================= */
+
+  .footer-container {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .footer-block {
+    min-width: 100%;
+  }
+
+  .social-links {
+    flex-wrap: wrap;
+  }
+
+  /* ================= ADMIN TABLE ================= */
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .admin-list,
+  .admin-edit {
+    padding: 16px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 14px;
+  }
+
+  /* ================= HEADER (НОРМАЛЬНАЯ МОБИЛЬНАЯ ВЕРСИЯ) ================= */
+
+  .menu-bar {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    overflow: hidden;
+  }
+
+  /* ЛОГО */
+  .left {
+    flex: 0 0 auto;
+    padding: 0;
+  }
+
+  .logo {
+    height: 34px;
+  }
+
+  /* ПОИСК (не растягивает шапку) */
+  .center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    padding: 0 8px;
+    min-width: 0;
+  }
+
+  .search-input {
+    display: none;
+  }
+
+
+  /* ПРАВАЯ ЧАСТЬ */
+  .right-menu {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 0;
+  }
+
+  .profile-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .menu-button {
+    font-size: 13px;
+  }
+
+  /* УБИРАЕМ ЛИШНЕЕ */
+  .role-display {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+
+  /* ================= GLOBAL ================= */
+
+  .home-layout,
+  .goods-layout {
+    padding: 8px;
+    gap: 12px;
+  }
+
+  .main-content {
+    gap: 16px;
+  }
+
+  /* ================= BANNER ================= */
+
+  .bannerr {
+    max-height: 110px;
+    border-radius: 10px;
+  }
+
+  /* ================= GRID ================= */
+
+  .grid,
+  .category-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* ================= PRODUCT CARD ================= */
+
+  .product-card-title {
+    font-size: 13px;
+  }
+
+  .product-card-price {
+    font-size: 15px;
+  }
+
+  .add-to-cart-btn {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .fav-btn {
+    width: 30px;
+    height: 30px;
+  }
+
+  .fav-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ================= GOODS PAGE ================= */
+
+  .product-title {
+    font-size: 20px;
+  }
+
+  /* ================= HEADER ================= */
+
+  .menu-bar {
+    padding: 0 8px;
+  }
+
+  .logo {
+    height: 30px;
+  }
+
+  .right-menu {
+    gap: 6px;
+  }
+
+  .profile-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .menu-button {
+    font-size: 12px;
+  }
+
+  /* если вдруг имя пользователя где-то вылезает */
+  .role-display {
+    display: none;
+  }
+}
