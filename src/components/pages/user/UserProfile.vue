@@ -2,29 +2,18 @@
 import { ref, watch, computed } from 'vue'
 import { useUsers } from '../../../composables/useUsers'
 
-// =========================
-// USER STORE
-// =========================
-// получаем текущего пользователя и метод редактирования
 const { currentUser, editUser } = useUsers()
 
 // =========================
 // UI STATE
 // =========================
-// режим редактирования (вкл/выкл)
 const isEditing = ref(false)
-
-// активная вкладка: profile / orders
 const activeTab = ref('profile')
-
-// локальная копия пользователя для редактирования
 const editedUser = ref({ ...(currentUser.value || {}) })
-
-// уведомление об успешных действиях
 const notification = ref('')
 
 // =========================
-// ОШИБКИ ВАЛИДАЦИИ
+// ERRORS
 // =========================
 const errors = ref({
     name: '',
@@ -35,9 +24,8 @@ const errors = ref({
 })
 
 // =========================
-// МАСКА ТЕЛЕФОНА
+// PHONE MASK
 // =========================
-// форматирует ввод в формат +7(XXX)XXX-XX-XX
 function formatPhone(value) {
     let numbers = (value || '').replace(/\D/g, '')
 
@@ -58,31 +46,33 @@ function formatPhone(value) {
     return result
 }
 
+
+const MIN_BIRTHDATE = new Date('2012-01-01')
+
 // =========================
-// ВАЛИДАЦИЯ EMAIL
+// VALIDATION  
 // =========================
 function validateEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email || '')
 }
 
-// =========================
-// ВАЛИДАЦИЯ ТЕЛЕФОНА
-// =========================
 function validatePhone(phone) {
     if (!phone) return true
     return /^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}$/.test(phone)
 }
 
-// =========================
-// ВАЛИДАЦИЯ ДАТЫ РОЖДЕНИЯ
-// =========================
 function validateBirthdate(date) {
     if (!date) return true
-    return date <= '2012-01-01'
+
+    const birth = new Date(date)
+
+    if (isNaN(birth.getTime())) return false
+
+    return birth <= MIN_BIRTHDATE
 }
 
 // =========================
-// СБРОС ОШИБОК
+// RESET ERRORS
 // =========================
 function resetErrors() {
     errors.value = {
@@ -95,7 +85,7 @@ function resetErrors() {
 }
 
 // =========================
-// НАЧАЛО РЕДАКТИРОВАНИЯ
+// EDIT FLOW
 // =========================
 function startEditing() {
     editedUser.value = { ...currentUser.value }
@@ -104,67 +94,62 @@ function startEditing() {
     resetErrors()
 }
 
-// отмена редактирования
 function cancelEditing() {
     isEditing.value = false
     resetErrors()
 }
 
 // =========================
-// СОХРАНЕНИЕ ИЗМЕНЕНИЙ
+// SAVE
 // =========================
 function saveChanges() {
     resetErrors()
 
     let valid = true
+
     const u = editedUser.value
 
-    // проверка имени
+    // NAME
     if (!u.name?.trim()) {
         errors.value.name = 'Имя не может быть пустым'
         valid = false
     }
 
-    // проверка пароля
+    // PASSWORD
     if (!u.password?.trim()) {
         errors.value.password = 'Пароль не может быть пустым'
         valid = false
     }
 
-    // проверка email
+    // EMAIL
     if (!validateEmail(u.email)) {
-        errors.value.email = 'Некорректный email'
+        errors.value.email = 'Неверный формат email'
         valid = false
     }
 
-    // проверка телефона
+    // PHONE 
     if (u.phone && !validatePhone(u.phone)) {
-        errors.value.phone = 'Некорректный телефон'
+        errors.value.phone = 'Неверный формат телефона'
         valid = false
     }
 
-    // проверка даты рождения
+    // BIRTHDATE
     if (u.birthdate && !validateBirthdate(u.birthdate)) {
-        errors.value.birthdate =
-            'Дата рождения не может быть позже 1 января 2012 года'
+        errors.value.birthdate = 'Дата рождения не может быть позже 01.01.2012'
         valid = false
     }
 
-    // если есть ошибки — остановка
     if (!valid) return
 
-    // сохранение пользователя в store
     editUser(currentUser.value.login, { ...u })
 
-    // уведомление об успехе
     notification.value = 'Изменения сохранены'
     isEditing.value = false
 }
 
 // =========================
-// СИНХРОНИЗАЦИЯ ДАННЫХ
+// SYNC
 // =========================
-// если пользователь обновился — обновляем локальную копию
 watch(currentUser, (newVal) => {
     if (!isEditing.value) {
         editedUser.value = { ...newVal }
@@ -172,10 +157,11 @@ watch(currentUser, (newVal) => {
 })
 
 // =========================
-// СПИСОК ЗАКАЗОВ
+// MOCK ORDERS
 // =========================
-// берём заказы текущего пользователя
 const orders = computed(() => currentUser.value?.orders ?? [])
+
+
 
 </script>
 

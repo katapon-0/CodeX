@@ -126,7 +126,14 @@ function editUser(loginStr, newData) {
 
 function deleteUser(loginStr) {
     const idx = userList.value.findIndex(u => u.login === loginStr)
-    if (idx === -1) return
+    if (idx === -1) return false
+
+    const user = userList.value[idx]
+
+ 
+    if (user.role === 'admin') {
+        return false
+    }
 
     userList.value.splice(idx, 1)
     saveUsers()
@@ -134,6 +141,8 @@ function deleteUser(loginStr) {
     if (currentUser.value?.login === loginStr) {
         logoutUser()
     }
+
+    return true
 }
 
 // =========================
