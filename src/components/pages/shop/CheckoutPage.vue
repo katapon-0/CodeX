@@ -96,11 +96,34 @@ function validatePayment() {
         errors.value.cardNumber = 'Номер карты должен содержать 16 цифр'
     }
 
-    // проверка срока действия
-    if (!/^\d{2}\/\d{2}$/.test(payment.value.expiry)) {
-        errors.value.expiry = 'Введите срок в формате MM/YY'
-    }
+    const expiry = payment.value.expiry
 
+    if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+        errors.value.expiry = 'Введите срок в формате MM/YY'
+    } else {
+        const [mm, yy] = expiry.split('/').map(Number)
+
+        const current = 26  
+        const minMonth = 1
+        const minYear = 26
+
+        // базовая проверка месяца
+        if (mm < 1 || mm > 12) {
+            errors.value.expiry = 'Месяц должен быть 01–12'
+        }
+
+
+        const fullYear = yy < 100 ? yy : yy % 100
+
+        if (fullYear < minYear) {
+            errors.value.expiry = 'Срок карты не может быть раньше 01/26'
+        }
+
+        // если тот же год — проверяем месяц
+        if (fullYear === minYear && mm < minMonth) {
+            errors.value.expiry = 'Срок карты не может быть раньше 01/26'
+        }
+    }
     // проверка CVV
     if (!/^\d{3}$/.test(payment.value.cvv)) {
         errors.value.cvv = 'CVV должен содержать 3 цифры'
@@ -115,6 +138,27 @@ function validatePayment() {
     return Object.keys(errors.value).length === 0
 }
 
+function formatExpiry(value) {
+    // только цифры
+    let v = value.replace(/\D/g, '').slice(0, 4)
+
+    let mm = v.slice(0, 2)
+    let yy = v.slice(2, 4)
+
+    // ограничение месяца
+    if (mm.length === 2) {
+        let month = Number(mm)
+
+        if (month < 1) month = 1
+        if (month > 12) month = 12
+
+        mm = String(month).padStart(2, '0')
+    }
+
+
+    if (v.length <= 2) return mm
+    return `${mm}/${yy}`
+}
 // =========================
 // ОФОРМЛЕНИЕ ЗАКАЗА
 // =========================
@@ -213,7 +257,8 @@ function goBack() {
 
                     <div class="form-group">
                         <label>Срок действия</label>
-                        <input v-model="payment.expiry" placeholder="MM/YY" />
+                        <input :value="payment.expiry" @input="payment.expiry = formatExpiry($event.target.value)"
+                            placeholder="MM/YY" maxlength="5" />
                         <small class="error" v-if="errors.expiry">
                             {{ errors.expiry }}
                         </small>

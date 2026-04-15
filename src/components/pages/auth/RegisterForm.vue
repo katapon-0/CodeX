@@ -209,7 +209,7 @@ function goLogin() {
           </div>
 
           <div class="form-group">
-            <label>Телефон (опционально)</label>
+            <label>Телефон </label>
             <input :value="userForm.phone" @input="userForm.phone = formatPhone($event.target.value)" type="text"
               placeholder="+7(XXX)XXX-XX-XX" maxlength="16" />
             <small class="error" v-if="errors.phone">{{ errors.phone }}</small>
