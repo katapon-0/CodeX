@@ -253,8 +253,16 @@ function handleLogout() {
 .add-to-cart-btn-register {
   background-color: var(--bg-color);
   color: black;
+  transform: none;
+  box-shadow: none;
 }
 
+.add-to-cart-btn-register:hover {
+  background-color: var(--bg-color);
+  color: rgb(69, 69, 69);
+  transition: 0.3s;
+
+}
 
 /* =========================
    СОСТОЯНИЕ "УЖЕ ВОШЁЛ"

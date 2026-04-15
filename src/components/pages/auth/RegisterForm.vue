@@ -69,29 +69,53 @@ function formatPhone(value) {
 function validate() {
   errors.value = {}
 
-  if (!userForm.value.login) errors.value.login = 'Введите логин'
-  if (!userForm.value.name) errors.value.name = 'Введите имя'
-  if (!userForm.value.password) errors.value.password = 'Введите пароль'
+  const login = userForm.value.login?.trim()
+  const name = userForm.value.name?.trim()
+  const password = userForm.value.password?.trim()
+  const email = userForm.value.email?.trim()
+  const phone = userForm.value.phone?.trim()
+  const birthdate = userForm.value.birthdate
+
+  // LOGIN
+  if (!login) {
+    errors.value.login = 'Введите логин'
+  }
+
+  // NAME
+  if (!name) {
+    errors.value.name = 'Введите имя'
+  }
+
+  // PASSWORD (СТРОГО)
+  if (!password) {
+    errors.value.password = 'Введите пароль'
+  } else if (password.length < 6) {
+    errors.value.password = 'Пароль должен быть не менее 6 символов'
+  }
 
   // EMAIL
-  if (!userForm.value.email) {
+  if (!email) {
     errors.value.email = 'Введите email'
-  } else if (!validateEmail(userForm.value.email)) {
+  } else if (!validateEmail(email)) {
     errors.value.email = 'Неверный формат email'
   }
 
-  // PHONE (optional)
-  if (userForm.value.phone && !validatePhone(userForm.value.phone)) {
+  // PHONE (ОБЯЗАТЕЛЬНЫЙ)
+  if (!phone) {
+    errors.value.phone = 'Введите телефон'
+  } else if (!validatePhone(phone)) {
     errors.value.phone = 'Неверный формат телефона'
   }
 
-  // BIRTHDATE (обязательная)
-  if (!userForm.value.birthdate) {
+  // BIRTHDATE
+  if (!birthdate) {
     errors.value.birthdate = 'Введите дату рождения'
   } else {
-    const birth = new Date(userForm.value.birthdate)
+    const birth = new Date(birthdate)
 
-    if (birth > MIN_BIRTHDATE) {
+    if (isNaN(birth.getTime())) {
+      errors.value.birthdate = 'Некорректная дата'
+    } else if (birth > MIN_BIRTHDATE) {
       errors.value.birthdate = 'Дата рождения не может быть позже 01.01.2012'
     }
   }
@@ -143,9 +167,11 @@ function submitForm() {
 // =========================
 // NAV
 // =========================
-function goBack() {
-  router.push({ name: 'home' })
+function goLogin() {
+  router.push({ name: 'login' })
 }
+
+
 </script>
 
 <template>
@@ -196,8 +222,13 @@ function goBack() {
           </div>
 
           <div class="form-actions">
-            <button type="submit" class="add-to-cart-btn accent">Зарегистрироваться</button>
-            <button type="button" class="add-to-cart-btn" @click="goBack">На главную</button>
+            <button type="submit" class="add-to-cart-btn primary">
+              Зарегистрироваться
+            </button>
+
+            <button type="button" class="add-to-cart-btn secondary" @click="goLogin">
+              Вход
+            </button>
           </div>
         </form>
       </section>
@@ -206,6 +237,9 @@ function goBack() {
 </template>
 
 <style scoped>
+/* =========================
+   ОСНОВНОЙ ЛЕЙАУТ
+   ========================= */
 .page-layout {
   display: flex;
   gap: 24px;
@@ -219,6 +253,9 @@ function goBack() {
   padding: 40px 20px;
 }
 
+/* =========================
+   СЕКЦИЯ АВТОРИЗАЦИИ
+   ========================= */
 .auth-section {
   width: 100%;
   max-width: 450px;
@@ -231,6 +268,22 @@ function goBack() {
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
 }
 
+/* =========================
+   ТЕКСТ
+   ========================= */
+.auth-section h2 {
+  margin: 0;
+}
+
+.auth-section p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* =========================
+   ФОРМА
+   ========================= */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -243,13 +296,27 @@ function goBack() {
   gap: 4px;
 }
 
+.form-group label {
+  font-weight: 500;
+}
+
 .form-group input {
   padding: 10px 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.form-group input:focus {
+  border-color: #0f101d;
+  box-shadow: 0 0 0 2px rgba(15, 16, 29, 0.08);
+}
+
+/* =========================
+   ОШИБКИ
+   ========================= */
 .error {
   color: red;
   font-size: 12px;
@@ -260,20 +327,48 @@ function goBack() {
   font-size: 12px;
 }
 
+/* =========================
+   КНОПКИ (как в loginform)
+   ========================= */
 .form-actions {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
   margin-top: 8px;
 }
 
 .add-to-cart-btn {
   padding: 10px 16px;
-  border: none;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
+  border: none;
+  transition: 0.2s;
+}
+
+/* PRIMARY — "Зарегистрироваться" */
+.add-to-cart-btn.primary {
+  background-color: #0f101d;
   color: #fff;
-  background-color: var(--secondary);
-  transition: background 0.2s;
+}
+
+.add-to-cart-btn.primary:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* SECONDARY — "Вход" */
+.add-to-cart-btn.secondary {
+  background-color: var(--bg-color);
+  color: black;
+  transform: none;
+  box-shadow: none;
+}
+
+.add-to-cart-btn.secondary:hover {
+  background-color: var(--bg-color);
+  color: rgb(69, 69, 69);
+  transition: 0.3s;
+
 }
 </style>
