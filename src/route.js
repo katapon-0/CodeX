@@ -1,7 +1,7 @@
 // =========================
 // ROUTER (НАСТРОЙКА МАРШРУТИЗАЦИИ)
 // =========================
-import { createRouter, createWebHistory } from "vue-router"
+import { createRouter, createWebHistory, createWebHashHistory } from "vue-router"
 import { useUsers } from "./composables/useUsers"
 
 
@@ -183,7 +183,7 @@ const routes = [
 // СОЗДАНИЕ ROUTER
 // =========================
 export const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes
 })
 
